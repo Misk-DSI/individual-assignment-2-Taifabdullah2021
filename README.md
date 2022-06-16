@@ -1,8 +1,13 @@
 # Red wine Quality EDA
-Data : [Red wine Quality on Kaggle](https://www.kaggle.com/datasets/uciml/red-wine-quality-cortez-et-al-2009?datasetId=4458&searchQuery=r)
 
+## Data:
+[Red wine Quality on Kaggle](https://www.kaggle.com/datasets/uciml/red-wine-quality-cortez-et-al-2009?datasetId=4458&searchQuery=r)
+
+## Descrption:
 A simple exploring using R to find graphs and insights from the data. 
 
+
+## Files
 - src : wine_EDA.R and wine_report.rmd
 - archive : assignment.rmd
 - individual-assignment-2-Taifabdullah2021.Rproj
