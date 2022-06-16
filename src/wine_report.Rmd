@@ -182,8 +182,5 @@ ggplotly(plot)
 
 ### 3. Conclusion 
 
-In this report i have done some EDA for the Red Wine Quality from Kaggle. And it shows that some of the features like Alcohol and fixed_acidity may be good to build a prediction models the quality of the wine. And based on the heat map there were some inverse correlation between the values. 
-
-
-
+In this report i have done some EDA for the Red Wine Quality from Kaggle. And it shows that some of the features like Alcohol and fixed_acidity may be good to build a prediction models the quality of the wine. And based on the heat map there were some inverse correlation between the values.
 

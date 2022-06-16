@@ -1,15 +1,14 @@
 
 #Load the packages
+#install.packages("name")
 library(tidyverse)
-
-#install.packages("reactable")
 library (skimr)
-
 library(corrgram)
-
 library(ggpubr)
-
 library(reactable)
+library(GGally)
+library(plotly)
+library(here)
 
 
 #getwd()
@@ -72,11 +71,25 @@ ggplot(wine_claen)+ geom_point(aes(alcohol, volatile_acidity,colour = factor(qua
 #ggtitle("Distribution of Red Wine Quality Ratings")
 
 
+#grouping by the quality to see the pair plots
+
+wine_ggpair <- wine_clean
+wine_ggpair$quality <- as.factor(wine_ggpair$quality)
+ggpairs(wine_ggpair,columns = 1:6,aes(colour = quality, alpha = 0.4), upper=list(continuous = "blank"))
+
+wine_ggpair2 <- wine_clean
+wine_ggpair2$quality <- as.factor(wine_ggpair2$quality)
+ggpairs(wine_ggpair2,columns = 7:11,aes(colour = quality, alpha = 0.4), upper=list(continuous = "blank"))
 
 
 
+#2D interractive graph
 
+plot <- ggplot(data=wine_clean, aes(alcohol,fixed_acidity)) +
+  geom_point(aes(color=quality)) +
+  ggtitle("2D interractive graph")
 
+ggplotly(plot)
 
 
 
