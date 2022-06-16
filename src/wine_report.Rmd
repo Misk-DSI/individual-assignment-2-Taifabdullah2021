@@ -22,7 +22,8 @@ library(plotly)
 library(here)
 
 #here 
-here("individual-assignment-2-Taifabdullah2021","wine_report.rmd")
+i_am("individual-assignment-2-Taifabdullah2021.Rproj")
+read.csv(here("data","winequality-red.csv"))
 
 #reading the data
 wine_og <- read_csv("../data/winequality-red.csv")
