@@ -27,3 +27,7 @@ A simple exploring using R to find graphs and insights from the data.
 - GGally
 - plotly
 - here
+
+## HTML page
+
+[wine report](./wine_report.html)
