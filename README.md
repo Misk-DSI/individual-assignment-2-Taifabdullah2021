@@ -1,6 +1,7 @@
 # Red wine Quality EDA
+Data : [Red wine Quality on Kaggle]{https://www.kaggle.com/datasets/uciml/red-wine-quality-cortez-et-al-2009?datasetId=4458&searchQuery=r}
 
-simple EDA using R. 
+A simple exploring using R to find graphs and insights from the data. 
 
 - src : wine_EDA.R and wine_report.rmd
 - archive : assignment.rmd
@@ -12,3 +13,12 @@ simple EDA using R.
 - R 
 - Html
 
+##Libraries
+- tidyverse
+- skimr
+- corrgram
+- ggpubr
+- reactable
+- GGally
+- plotly
+- here
