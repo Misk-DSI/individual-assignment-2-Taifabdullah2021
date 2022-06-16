@@ -1,0 +1,189 @@
+---
+title: "Red wine quality EDA "
+author: "Taef al khales"
+output: 
+  html_document:
+      toc: true
+      
+knit: (function(input, ...) {rmarkdown::render(input,output_dir = "../")})
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library (skimr)
+library(corrgram)
+library(ggpubr)
+library(reactable)
+library(GGally)
+library(plotly)
+library(here)
+
+#here 
+here("individual-assignment-2-Taifabdullah2021","wine_report.rmd")
+
+#reading the data
+wine_og <- read_csv("../data/winequality-red.csv")
+
+```
+
+
+##  <span style="color:blue">1. The Data</span>
+
+- *fixed acidity*: most acids involved with wine or fixed or nonvolatile.
+- *volatile acidity*:the amount of acetic acid in wine, which at too high of levels can lead to an unpleasant, vinegar taste
+- citric acid:found in small quantities, citric acid can add ‘freshness’ and flavor to wines
+- *residual sugar*:  the amount of sugar remaining after fermentation stops, it’s rare to find wines with less than 1 gram/liter and wines with greater than 45 grams/liter are considered sweet
+- *chlorides*: the amount of salt in the wine
+- *free sulfur dioxide* : the free form of SO2 exists in equilibrium between molecular SO2 (as a dissolved gas) and bisulfite ion
+- *total sulfur dioxide*: amount of free and bound forms of S02; in low concentrations
+- *density*: the density of water is close to that of water depending on the percent alcohol and sugar content
+- *pH*:describes how acidic or basic a wine is on a scale from 0 (very acidic) to 14 (very basic); most wines are between 3-4 on the pH scale
+- *sulphates*: a wine additive which can contribute to sulfur dioxide gas (S02) levels, wich acts as an antimicrobial and antioxidant
+- *alcohol*:the percent alcohol content of the wine
+- *quality* (score between 0 and 10)
+
+
+----------------------------------------------------
+
+
+## 2. <span style="color:blue">EDA</span>
+
+### 2.1 First look at the data 
+
+```{r echo=FALSE}
+knitr::kable(head(wine_og), col.names = gsub("[.]", " ", names(wine_og)))
+
+#reactable(wine_og)
+```
+
+### 2.2 Tidy up the columns names 
+
+Now the names are seprated with (_) instead of a space. and  be in lower case.
+
+```{r echo=FALSE}
+wine_clean <- wine_og %>%
+  janitor::clean_names()
+
+reactable(wine_clean)
+```
+
+### 2.3 Summary statistics 
+
+Skim is a very nice package for summary statistics [Skim](https://docs.ropensci.org/skimr/reference/skim.html).
+
+```{r}
+skim(wine_clean)
+```
+
+We can see the following things:
+
+1. all columns are numeric 
+2. no missing values
+3. it is not a big dataset
+
+
+
+### 2.4 Univariate
+
+### 2.4.1 Quality Distribution
+
+It appears that is this sample dataset, the most frequent wine quality are 5 and 6. 
+
+```{r echo=FALSE}
+ggplot(wine_clean,aes(x=quality))+geom_bar(stat = "count",position = "dodge", fill = "Red")+
+  scale_x_continuous(breaks = seq(3,8,1))+
+  ggtitle("Distribution of Red Wine Quality Ratings")+
+  theme_classic()
+```
+
+
+### 2.4.2 PH Distribution (boxplot)
+
+```{r echo=FALSE}
+dens_ph <- ggplot(wine_clean)+geom_density(aes(x =p_h), colour='red')
+boxplot_ph <- ggplot(wine_clean)+geom_boxplot(aes(x =p_h))
+
+ggarrange(dens_ph,boxplot_ph,  nrow = 2)
+
+```
+
+
+
+### 2.4.3 All data Distribution
+```{r echo=FALSE}
+wine_clean %>%
+  gather() %>% 
+  ggplot(aes(value,fill=key)) +
+    facet_wrap(~ key, scales = "free") +
+    geom_histogram(bins=sqrt(nrow(wine_clean))) +
+    theme(legend.position="none") 
+```
+
+
+### 2.4.2 Alcohol Distribution (boxplot)
+
+```{r echo=FALSE}
+dens_al <- ggplot(wine_clean)+geom_density(aes(x =alcohol), colour='red')
+boxplot_al <- ggplot(wine_clean)+geom_boxplot(aes(x =alcohol))
+
+ggarrange(dens_al,boxplot_al,  nrow = 2)
+```
+
+### 2.5 Bivariate 
+
+### 2.5.1 GGPair graph (group by quality)
+
+```{r}
+wine_ggpair <- wine_clean
+wine_ggpair$quality <- as.factor(wine_ggpair$quality)
+ggpairs(wine_ggpair,columns = 1:6,aes(colour = quality, alpha = 0.4), upper=list(continuous = "blank"))
+
+wine_ggpair2 <- wine_clean
+wine_ggpair2$quality <- as.factor(wine_ggpair2$quality)
+ggpairs(wine_ggpair2,columns = 7:11,aes(colour = quality, alpha = 0.4), upper=list(continuous = "blank"))
+
+```
+
+### 2.5.2 Correlation (heatmap)
+
+- *Alcohol* and *Quality* are inversely highly correlated.
+- *fixed acidity* is highly correlated with *Ensity* and *Citric acid*
+- *total sulfur dioxide* is highly correlated with *free sulfur dioxide*
+
+```{r echo=FALSE}
+
+corrgram(wine_clean, order=TRUE,
+         upper.panel=panel.cor, main="correlation heat map")
+```
+
+### 2.6 Mean values grouped by the quality 
+
+```{r}
+wine_df <- wine_clean %>% group_by(quality) %>% summarise(across(everything(), mean))
+wine_df <- signif(wine_df, digits = 3)
+reactable(wine_df)
+```
+
+
+
+### 2.7 2D interractive graph
+
+
+```{r}
+plot <- ggplot(data=wine_clean, aes(alcohol,fixed_acidity)) +
+geom_point(aes(color=quality)) +
+ggtitle("2D interractive graph")
+
+ggplotly(plot)
+```
+
+### 3. Conclusion 
+
+In this report i have done some EDA for the Red Wine Quality from Kaggle. And it shows that some of the features like Alcohol and fixed_acidity may be good to build a prediction models the quality of the wine. And based on the heat map there were some inverse correlation between the values. 
+
+
+
+
